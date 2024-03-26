@@ -1,5 +1,6 @@
 # Import FastAPI, pandas, and uvicorn
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 import pandas as pd
 import os
 from dotenv import load_dotenv
@@ -10,6 +11,14 @@ load_dotenv()
 
 # Create a FastAPI instance
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Define a startup event
 @app.on_event("startup")
