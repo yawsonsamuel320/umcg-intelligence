@@ -17,7 +17,6 @@ async def startup_event():
     table_name_list = [
         "health_vioscore_table",
         "intelligence_data_model",
-        "health_vioscore_table",
         "all_gemeente_data_view",
         "world_data",
         "weather_data"
@@ -34,14 +33,24 @@ async def startup_event():
     global health_vioscore_table
     health_vioscore_table = table_dict['health_vioscore_table']
 
+def get_type_from_code(code):
+    type_map = {
+        "NL": "Country",
+        "PV": "Province",
+        "GM": "Municipality",
+        "WK": "District",
+        "BU": "Neighbourhood"  
+    }
+    code_prefix = code[:2]
+    return type_map.get(code_prefix, "Unknown")
     
 # Define a route to return intelligence view data for a particular region_code
 @app.get("/intelligence/")
 async def get_intelligence(
-    region_code: str='NL00',
-    region_name: str='Nederland',
-    region_type: str='Country'
+    region_code: str='NL00'
     ):
+  region_name = health_vioscore_table[(health_vioscore_table["region_code"] == region_code)]["region_name"].iloc[0]
+  region_type = get_type_from_code("NL00")
   i = 1
   intelligence_dictionary = {
       "labels": [
